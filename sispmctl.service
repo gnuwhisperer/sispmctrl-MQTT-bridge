@@ -1,0 +1,11 @@
+[Unit]
+Description=Sispm Mqtt bridge Service
+Requires=network.target
+
+[Service]
+Type=notify
+ExecStart=/usr/local/bin/sispmctl-to-MQTT.py
+Nice=5
+
+[Install]
+WantedBy=multi-user.target
