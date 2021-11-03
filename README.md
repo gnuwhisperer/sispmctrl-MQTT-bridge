@@ -2,7 +2,7 @@ sispmctl-MQTT-bridge
 =====================
 
 This code implement the function of controlling Gembird silverlit USB switchable outlets through MQTT.
-This Fork was done, to have it work better with Homeassistant.
+This Fork was done, to have it work better with [Homeassistant](https://www.home-assistant.io/).
 
 The script will need you to install sispmctl
 
@@ -52,3 +52,15 @@ Bus 001 Device 010: ID 04b4:fd13 Cypress Semiconductor Corp. Programmable power 
 $ cat /etc/udev/rules.d/sispm.rules
 SUBSYSTEM=="usb", ATTRS{idVendor}=="04b4", ATTRS{idProduct}=="fd13", MODE="0777"
 ( Plug it out and back it, to have the rules reloaded. )
+
+My Configuration for Homeassistant looks like this:
+  
+- platform: mqtt
+  name: "Steckleisenschalter 1"
+  state_topic: "tele/sispmctl/<device_id>/STATE/POWER1"
+  command_topic: "cmnd/sispmctl/<device_id>/socket/POWER1"
+  payload_on: "ON"
+  payload_off: "OFF"
+  state_on: "ON"
+  state_off: "OFF"
+  optimistic: false
