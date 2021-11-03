@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3.7
 
-import ConfigParser
+import configparser
 import json
 import os
 import sys
-import thread
+import _thread
 import time
 
 import paho.mqtt.client as mqtt
@@ -51,10 +51,10 @@ def devices_get_serialnumbers():
 def publish_state(device):
 	global states
 	topic = "tele/"+ prefix +"/"+ device +"/STATE"
-	#message = str(states[device])
-	message = json.dumps(states[device], sort_keys=True)
-	client.publish(topic, message , QOS)
-	print("SENT MQTT MESSAGE: "+topic+ " " + message)
+	for socket, state in states[device].items():
+		message = (topic+"/"+socket)
+		client.publish(message, state, QOS)
+		print("SENT MQTT MESSAGE: ", message, state )
 
 def on_connect(mqtt, rc, a):
     mqtt.subscribe("cmnd/"+prefix+"/#", 0)
@@ -63,22 +63,21 @@ def on_message(a, mqtt, msg):
 	global devices
 	# try:
 	if True:
-		print("RECEIVED MQTT MESSAGE: "+msg.topic + " " + str(msg.payload))
+		print(f"received mqtt message: {msg.topic} message:  {msg.payload.decode()}")
 		#cmnd/<prefix>/<serial>/POWER<socket+1> = <ON|OFF|0|1>
 		topics = msg.topic.split("/")
 		socket = int(topics[-1][-1])
 		#print("socket: "+str(socket))
-		value = msg.payload
-		device = topics[-2]
+		value = msg.payload.decode()
+		device = topics[-3]
 		if not device in devices:
 			return
 		if value.upper() == "ON" or value == "1":
 			# Turn on
 			socket_on(device, socket)
-		else:
-		    # Turn off
-		    socket_off(device, socket)
-
+		if value.upper() == "OFF" or value == "1":
+			# Turn off
+			socket_off(device, socket)
     # except:
     #   print "Error occured while processing command"
 	return
@@ -100,8 +99,10 @@ if __name__ == '__main__':
 	try:
 		ConfigFile = sys.argv[1]
 	except:
-		ConfigFile = path + "/sispmctl.conf"
-
+		try:
+			ConfigFile = "/etc/sispmctl.conf"
+		except:
+			ConfigFile = path + "/sispmctl.conf"
 	try:
 		f = open(ConfigFile, "r")
 		f.close()
@@ -113,7 +114,7 @@ if __name__ == '__main__':
 		except:
 			print("Please provide a valid config file! By argument or as default sispmctl.conf file.")
 			exit(1)
-	config = ConfigParser.RawConfigParser(allow_no_value=True)
+	config = configparser.RawConfigParser(allow_no_value=True)
 	config.read(ConfigFile)
 
 	# Load basic config.
@@ -143,7 +144,7 @@ if __name__ == '__main__':
 	states = {}
 
 	# Start tread...
-	thread.start_new_thread(ControlLoop, ())
+	_thread.start_new_thread(ControlLoop, ())
 
 	while True:
 		# Check if anything changed
