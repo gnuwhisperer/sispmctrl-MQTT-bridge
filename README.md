@@ -8,20 +8,26 @@ This Fork was done, to have it work better with [Homeassistant](https://www.home
 The script will need you to install sispmctl
 
 On Ubuntu/RPI use:
+```
 sudo apt-get install sispmctl
+```
 
 How to use: 
 
-The command 
+The commands
 ```
-$ mosquitto_pub -h <host> -t "cmnd/sispmctl/<device_id>/socket/POWER1" -m on
-$ mosquitto_pub -h <host> -t "cmnd/sispmctl/<device_id>/socket/POWER1" -m off
+mosquitto_pub -h <host> -t "cmnd/sispmctl/<device_id>/socket/POWER1" -m on
 ```
-Will turn on outlet 1 (numbered 1-4) on the gembird device with the serial <device_id>. 
+```
+mosquitto_pub -h <host> -t "cmnd/sispmctl/<device_id>/socket/POWER1" -m off
+```
+Will turn on outlet 1 (numbered 1-4) on or off with the gembird device with the serial <device_id>.
+(needs mosquitto installed, of course)
 
 To get the ids run: 
->sispmctl -s  
-
+```
+sispmctl -s  
+```
 The script will also write a 
 
 tele/sispmctl/<device_id>/LWT True
