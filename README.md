@@ -2,6 +2,7 @@ sispmctl-MQTT-bridge
 =====================
 
 This code implement the function of controlling Gembird silverlit USB switchable outlets through MQTT.
+
 This Fork was done, to have it work better with [Homeassistant](https://www.home-assistant.io/).
 
 The script will need you to install sispmctl
