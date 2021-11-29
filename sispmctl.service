@@ -3,7 +3,7 @@ Description=Sispm Mqtt bridge Service
 Requires=network.target
 
 [Service]
-Type=notify
+Type=simple
 ExecStart=/usr/local/bin/sispmctl-to-MQTT.py
 Nice=5
 
