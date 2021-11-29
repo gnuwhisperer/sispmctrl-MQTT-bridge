@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.7 -u
 
 import configparser
 import json
@@ -54,7 +54,7 @@ def publish_state(device):
 	for socket, state in states[device].items():
 		message = (topic+"/"+socket)
 		client.publish(message, state, QOS)
-		print("SENT MQTT MESSAGE: ", message, state )
+		#print("SENT MQTT MESSAGE: ", message, state )
 
 def on_connect(mqtt, rc, a):
     mqtt.subscribe("cmnd/"+prefix+"/#", 0)
@@ -156,14 +156,14 @@ if __name__ == '__main__':
 		# Look for disconnections..
 		for device in old_devices:
 			if not device in devices:
-				print("device disconnected: "+device)
+				#print("device disconnected: "+device)
 				topic = "tele/"+prefix +"/"+ device + "/LWT"
 				client.publish(topic , False, QOS)
 
 		# Look for devices being connected..
 		for device in devices:
 			if not device in old_devices:
-				print("device connected: "+device)
+				#print("device connected: "+device)
 				topic = "tele/"+prefix +"/"+ device + "/LWT"
 				client.publish(topic , True, QOS)
 	            
